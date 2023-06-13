@@ -1,0 +1,6 @@
+name = "archive-bot"
+main = "src/index.ts"
+node_compat = true
+workers_dev = false
+compatibility_date = "2023-06-13"
+route = { pattern = "https://api.example.com/archive-bot/v1/check", zone_name = "example.com" }

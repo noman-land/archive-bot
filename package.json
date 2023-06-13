@@ -1,0 +1,19 @@
+{
+  "name": "archive-bot",
+  "version": "0.1.0",
+  "description": "Automatically get archive.ph URLs in Slack",
+  "main": "src/index.ts",
+  "scripts": {
+    "tail": "npx wrangler tail",
+    "start": "npx wrangler dev --local",
+    "deploy": "npx wrangler deploy src/index.ts"
+  },
+  "author": "Noman",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230221.0",
+    "typescript": "^4.9.5",
+    "vitest": "^0.29.1",
+    "wrangler": "^3.1.0"
+  }
+}
