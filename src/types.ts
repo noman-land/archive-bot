@@ -1,14 +1,30 @@
-interface SlackAppMentionEvent {
+interface SlackEvent { 
   client_msg_id: string;
-  type: 'link_shared';
-  source: string;
   text: string;
   user: string;
   ts: string;
   team: string;
   channel: string;
+}
+
+interface SlackLinkShareEvent extends SlackEvent {
+  type: 'link_shared';
+  source: string;
   message_ts: string;
   links: Array<{ url: string }>;
+}
+
+interface SlackAppMentionEvent extends SlackEvent {
+  type: 'app_mention';
+  blocks: Array<{
+    elements: Array<{
+      elements: Array<{
+        type: 'link',
+        url: 'string';
+      }>;
+    }>;
+  }>;
+  event_ts: string;
 }
 
 export interface Env {
@@ -22,7 +38,7 @@ export interface Env {
 export interface RequestJson {
   api_app_id: string;
   token: string;
-  event: SlackAppMentionEvent;
+  event: SlackLinkShareEvent | SlackAppMentionEvent;
 }
 
 export type SlackApi = (
