@@ -11,9 +11,9 @@ jobs:
     name: Deploy
     steps:
       - uses: actions/checkout@v3
-      - name: Publish
+      - name: Deploy
         uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           preCommands: npm install && sed 's/example\.com/${{ secrets.DOMAIN }}/g' wrangler-example.toml > wrangler.toml
-          command: publish
+          command: deploy
