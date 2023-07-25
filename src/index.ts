@@ -7,7 +7,7 @@ export default {
       return new Response(null, { status: 404 });
     }
 
-    const  {
+    const {
       api_app_id,
       token,
       event,
