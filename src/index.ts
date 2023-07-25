@@ -10,14 +10,8 @@ export default {
     const {
       api_app_id,
       token,
-      event: {
-        channel,
-        source,
-        type,
-        message_ts,
-        links: [{ url }],
-      },
-    } = await request.json<RequestJson>();
+      event,
+    }  = await request.json<RequestJson>();
 
     if (
       api_app_id !== env.SLACK_APP_ID ||
@@ -26,13 +20,34 @@ export default {
       return new Response(null, { status: 401 });
     }
 
-    if (type === 'link_shared' && source === 'conversations_history') {
+    if (event.type === 'link_shared' && event.source === 'conversations_history') {
+      const {
+        channel,
+        message_ts,
+        links: [{ url }],
+      } = event;
       return postSlackMessage(
         `https://archive.ph/submit/?url=${url}`,
         channel,
         message_ts,
         env
       );
+    }
+
+    if (event.type === 'app_mention') {
+      const {
+        channel,
+        event_ts,
+        blocks
+      } = event;
+      const urls = blocks
+        .flatMap(({ elements }) => elements)
+        .flatMap(({ elements }) => elements)
+        .filter(({ type }) => type === 'link')
+        .map(({ url }) => `https://archive.ph/submit/?url=${url}`)
+        .join('\n')
+      console.log(urls)
+      return postSlackMessage(urls ,channel, event_ts, env);
     }
 
     return new Response(null, { status: 200 });
