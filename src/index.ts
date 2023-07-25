@@ -1,10 +1,40 @@
 import { postSlackMessage } from './api';
-import { Env, RequestJson } from './types';
+import { Block, Env, RequestJson } from './types';
+
+const getUrls = (blocks: Block[]) => blocks
+  .flatMap(({ elements }) => elements)
+  .flatMap(({ elements }) => elements)
+  .filter(({ type }) => type === 'link')
+  .map(({ url }) => `https://archive.ph/submit/?url=${url}`)
+  .join('\n')
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     if (request.method !== 'POST') {
       return new Response(null, { status: 404 });
+    }
+
+    if (request.headers.get('Content-Type') === 'application/x-www-form-urlencoded') {
+      const formData = await request.formData();
+      const { payload } = Object.fromEntries(formData.entries());
+      const {
+        callback_id,
+        type,
+        token,
+        message: { ts, blocks },
+        channel
+      } = JSON.parse(payload)
+
+      if (
+        token !== env.SLACK_VERIFICATION_TOKEN ||
+        callback_id !== 'archive' ||
+        type !== 'message_action'
+      ) {
+        return new Response(null, { status: 401 });
+      }
+
+      const urls = getUrls(blocks)
+      return postSlackMessage(urls, channel.id, ts, env)
     }
 
     const {
@@ -40,13 +70,7 @@ export default {
         event_ts,
         blocks
       } = event;
-      const urls = blocks
-        .flatMap(({ elements }) => elements)
-        .flatMap(({ elements }) => elements)
-        .filter(({ type }) => type === 'link')
-        .map(({ url }) => `https://archive.ph/submit/?url=${url}`)
-        .join('\n')
-      console.log(urls)
+      const urls = getUrls(blocks)
       return postSlackMessage(urls ,channel, event_ts, env);
     }
 

@@ -14,16 +14,19 @@ interface SlackLinkShareEvent extends SlackEvent {
   links: Array<{ url: string }>;
 }
 
-interface SlackAppMentionEvent extends SlackEvent {
-  type: 'app_mention';
-  blocks: Array<{
+export interface Block { 
+  elements: Array<{
     elements: Array<{
-      elements: Array<{
-        type: 'link',
-        url: 'string';
-      }>;
+      type: 'link',
+      url: string;
     }>;
   }>;
+}
+
+
+interface SlackAppMentionEvent extends SlackEvent {
+  type: 'app_mention';
+  blocks: Block[];
   event_ts: string;
 }
 
