@@ -6,7 +6,7 @@
   "scripts": {
     "tail": "npx wrangler tail",
     "start": "npx wrangler dev --local",
-    "deploy": "npx wrangler deploy src/index.ts"
+    "deploy": "npx wrangler publish src/index.ts"
   },
   "author": "Noman",
   "license": "MIT",
