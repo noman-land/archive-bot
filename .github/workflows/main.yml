@@ -16,4 +16,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           preCommands: npm install && sed 's/example\.com/${{ secrets.DOMAIN }}/g' wrangler-example.toml > wrangler.toml
-          command: deploy src/index.js
+          command: deploy
