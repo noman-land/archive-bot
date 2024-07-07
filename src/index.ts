@@ -30,6 +30,7 @@ export default {
         callback_id !== 'archive' ||
         type !== 'message_action'
       ) {
+        console.log(JSON.parse(payload))
         return new Response(null, { status: 401 });
       }
 
